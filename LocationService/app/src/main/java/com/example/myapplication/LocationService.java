@@ -61,8 +61,8 @@ public class LocationService extends Service {
 
     private void startLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(1000); // 1 second
-        locationRequest.setFastestInterval(1000); // 1 second
+        locationRequest.setInterval(10000); // 10 second
+        locationRequest.setFastestInterval(10000); // 10 second
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

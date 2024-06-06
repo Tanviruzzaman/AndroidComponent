@@ -3,6 +3,11 @@ package com.example.alarmservice;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -18,12 +23,18 @@ import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TimePicker timePicker;
-    private Button setAlarmButton;
+    private RecyclerView alarmRecyclerView;
+    private AlarmAdapter alarmAdapter;
+    private List<Alarm> alarmList = new ArrayList<>();
+    private FloatingActionButton fab;
     private Button stopAlarmButton;
 
     @Override
@@ -31,31 +42,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        timePicker = findViewById(R.id.timePicker);
-        setAlarmButton = findViewById(R.id.setAlarmButton);
+        alarmRecyclerView = findViewById(R.id.alarmRecyclerView);
+        fab = findViewById(R.id.fab);
         stopAlarmButton = findViewById(R.id.stopAlarmButton);
 
-        setAlarmButton.setOnClickListener(v -> setAlarm());
-        stopAlarmButton.setOnClickListener(v -> stopAlarm());
+        alarmAdapter = new AlarmAdapter(alarmList);
+        alarmRecyclerView.setAdapter(alarmAdapter);
+        alarmRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCreateAlarmFragment();
+            }
+        });
+
+        stopAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopAlarm();
+            }
+        });
     }
 
-    @SuppressLint("ScheduleExactAlarm")
-    private void setAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    private void openCreateAlarmFragment() {
+        Fragment fragment = new CreateAlarmFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-        calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-        calendar.set(Calendar.SECOND, 0);
-
-        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1);  // Set the alarm for the next day if the time has already passed
-        }
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(this, "Alarm set for " + timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute(), Toast.LENGTH_SHORT).show();
+    public void addAlarm(Alarm alarm) {
+        alarmList.add(alarm);
+        alarmAdapter.notifyDataSetChanged();
     }
 
     private void stopAlarm() {

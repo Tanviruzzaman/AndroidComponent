@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Alarm Service</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="ringtone_1">Ringtone 1</string>
+    <string name="ringtone_2">Ringtone 2</string>
+    <string name="ringtone_3">Ringtone 3</string>
+    <string name="unknown_ringtone">Unknown Ringtone</string>
+
+    <string-array name="ringtone_array">
+        <item>@string/ringtone_1</item>
+        <item>@string/ringtone_2</item>
+        <item>@string/ringtone_3</item>
+    </string-array>
+
+
 </resources>

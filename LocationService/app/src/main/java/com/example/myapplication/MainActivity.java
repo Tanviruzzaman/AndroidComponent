@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private final BroadcastReceiver locationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.d("LocationUpdate", "Latitude: " + latitude + ", Longitude: " + longitude);
-                locationTextView.setText(String.format("Current Location:\nLatitude: %.6f\nLongitude: %.6f", latitude, longitude));
+                //locationTextView.setText(String.format("Current Location:\nLatitude: %.6f\nLongitude: %.6f", latitude, longitude));
             }
         });
     }
